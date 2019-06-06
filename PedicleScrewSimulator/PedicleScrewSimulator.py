@@ -3,6 +3,7 @@ import unittest
 import vtk, qt, ctk, slicer
 from slicer.ScriptedLoadableModule import *
 import logging
+from six.moves.urllib.request import urlretrieve
 
 import PedicleScrewSimulatorWizard
 
@@ -226,7 +227,6 @@ class PedicleScrewSimulatorTest(ScriptedLoadableModuleTest):
     #
     # first, get some data
     #
-    import urllib
     downloads = (
         ('http://slicer.kitware.com/midas3/download?items=5767', 'FA.nrrd', slicer.util.loadVolume),
         )
@@ -235,7 +235,7 @@ class PedicleScrewSimulatorTest(ScriptedLoadableModuleTest):
       filePath = slicer.app.temporaryPath + '/' + name
       if not os.path.exists(filePath) or os.stat(filePath).st_size == 0:
         logging.info('Requesting download %s from %s...\n' % (name, url))
-        urllib.urlretrieve(url, filePath)
+        urlretrieve(url, filePath)
       if loader:
         logging.info('Loading %s...' % (name,))
         loader(filePath)
