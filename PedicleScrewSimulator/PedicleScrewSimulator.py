@@ -57,7 +57,7 @@ class PedicleScrewSimulatorWidget(ScriptedLoadableModuleWidget):
     self.screwStep = PedicleScrewSimulatorWizard.ScrewStep( 'Screw' )
     self.gradeStep = PedicleScrewSimulatorWizard.GradeStep( 'Grade' )
     self.endStep = PedicleScrewSimulatorWizard.EndStep( 'Final'  )
-    
+
     # add the wizard steps to an array for convenience
     allSteps = []
 
@@ -68,26 +68,26 @@ class PedicleScrewSimulatorWidget(ScriptedLoadableModuleWidget):
     allSteps.append( self.screwStep)
     allSteps.append( self.gradeStep)
     allSteps.append( self.endStep )
-    
-    
-    # Add transition 
+
+
+    # Add transition
     # Check if volume is loaded
     self.workflow.addTransition( self.loadDataStep, self.defineROIStep )
-    
+
     self.workflow.addTransition( self.defineROIStep, self.landmarksStep, 'pass', ctk.ctkWorkflow.Bidirectional )
     self.workflow.addTransition( self.defineROIStep, self.loadDataStep, 'fail', ctk.ctkWorkflow.Bidirectional  )
-    
+
     self.workflow.addTransition( self.landmarksStep, self.measurementsStep, 'pass', ctk.ctkWorkflow.Bidirectional )
     self.workflow.addTransition( self.landmarksStep, self.measurementsStep, 'fail', ctk.ctkWorkflow.Bidirectional )
-    
+
     self.workflow.addTransition( self.measurementsStep, self.screwStep, 'pass', ctk.ctkWorkflow.Bidirectional )
     self.workflow.addTransition( self.measurementsStep, self.screwStep, 'fail', ctk.ctkWorkflow.Bidirectional )
-    
+
     self.workflow.addTransition( self.screwStep, self.gradeStep, 'pass', ctk.ctkWorkflow.Bidirectional )
     self.workflow.addTransition( self.screwStep, self.gradeStep, 'fail', ctk.ctkWorkflow.Bidirectional )
-          
+
     self.workflow.addTransition( self.gradeStep, self.endStep )
-           
+
     nNodes = slicer.mrmlScene.GetNumberOfNodesByClass('vtkMRMLScriptedModuleNode')
 
     self.parameterNode = None
@@ -102,14 +102,14 @@ class PedicleScrewSimulatorWidget(ScriptedLoadableModuleWidget):
       self.parameterNode = slicer.vtkMRMLScriptedModuleNode()
       self.parameterNode.SetModuleName('PedicleScrewSimulator')
       slicer.mrmlScene.AddNode(self.parameterNode)
- 
+
     for s in allSteps:
         s.setParameterNode (self.parameterNode)
-    
-    
+
+
     # restore workflow step
     currentStep = self.parameterNode.GetParameter('currentStep')
-    
+
     if currentStep != '':
       logging.debug('Restoring workflow step to ' + currentStep)
       if currentStep == 'LoadData':
@@ -121,22 +121,22 @@ class PedicleScrewSimulatorWidget(ScriptedLoadableModuleWidget):
       if currentStep == 'Landmarks':
         self.workflow.setInitialStep(self.landmarksStep)
       if currentStep == 'Screw':
-        self.workflow.setInitialStep(self.screwStep) 
+        self.workflow.setInitialStep(self.screwStep)
       if currentStep == 'Grade':
-        self.workflow.setInitialStep(self.gradeStep)   
+        self.workflow.setInitialStep(self.gradeStep)
       if currentStep == 'Final':
         self.workflow.setInitialStep(self.endStep)
     else:
       logging.debug('currentStep in parameter node is empty')
-    
-    
+
+
     # start the workflow and show the widget
     self.workflow.start()
     workflowWidget.visible = True
     self.layout.addWidget( workflowWidget )
 
     # compress the layout
-    #self.layout.addStretch(1)        
+    #self.layout.addStretch(1)
 
   def cleanup(self):
     pass
@@ -164,8 +164,33 @@ class PedicleScrewSimulatorWidget(ScriptedLoadableModuleWidget):
           imp.load_module(packageName+'.'+submoduleName, f, filename, description)
       finally:
           f.close()
-          
+
     ScriptedLoadableModuleWidget.onReload(self)
+
+
+class PedicleScrewSimulatorLogic(ScriptedLoadableModuleLogic):
+  """This class should implement all the actual
+  computation done by your module.  The interface
+  should be such that other python code can import
+  this class and make use of the functionality without
+  requiring an instance of the Widget.
+  Uses ScriptedLoadableModuleLogic base class, available at:
+  https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py
+  """
+
+  def hasImageData(self,volumeNode):
+    """This is an example logic method that
+    returns true if the passed in volume
+    node has valid image data
+    """
+    if not volumeNode:
+      logging.debug('hasImageData failed: no volume node')
+      return False
+    if volumeNode.GetImageData() is None:
+      logging.debug('hasImageData failed: no image data in volume node')
+      return False
+    return True
+
 
 class PedicleScrewSimulatorTest(ScriptedLoadableModuleTest):
   """
