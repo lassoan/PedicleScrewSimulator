@@ -54,7 +54,7 @@ class PedicleScrewPlannerWidget(ScriptedLoadableModuleWidget):
 
     # create all wizard steps
     self.loadDataStep = PedicleScrewSimulatorWizard.LoadDataStep( 'LoadData'  )
-    self.defineROIStep = PedicleScrewSimulatorWizard.DefineROIStep( 'DefineROI', showSidesSelector=True )
+    self.defineROIStep = PedicleScrewSimulatorWizard.DefineROIStep( 'DefineROI') #, showSidesSelector=True )
     self.measurementsStep = PedicleScrewPlannerWizard.PlanningMeasurementsStep( 'Measurements'  )
     self.landmarksStep = PedicleScrewPlannerWizard.PlanningLandmarksStep( 'Landmarks' )
     # self.screwStep = PedicleScrewSimulatorWizard.ScrewStep( 'Screw' )
