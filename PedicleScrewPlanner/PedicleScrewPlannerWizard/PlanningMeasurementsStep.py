@@ -4,8 +4,6 @@
 from __main__ import qt, ctk, vtk, slicer
 
 from PedicleScrewSimulatorWizard import *
-#from PedicleScrewSimulatorStep import *
-#from .Helper import *
 
 import PythonQt
 import numpy as np
