@@ -229,7 +229,7 @@ class PlanningLandmarksStep(PedicleScrewSimulatorStep):
     self.table2.setMinimumWidth(400)
     self.table2.setMinimumHeight(215)
     self.table2.setMaximumHeight(215)
-    horizontalHeaders = ["Fiducial", "Level\Side\Landmarks"]
+    horizontalHeaders = ["Fiducial", "Level/Side/Landmarks"]
     self.table2.setHorizontalHeaderLabels(horizontalHeaders)
     self.table2.itemSelectionChanged.connect(self.onTableCellClicked)
     self.__layout.addWidget(self.table2)
